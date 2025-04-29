@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Diary Create{% endblock %}
+{% block header %}
+    <h1>New Diary</h1>
+    <nav>
+        <a href="{% url 'diary:list' %}">Diary List</a>
+    </nav>
+{% endblock %}
+{% block content %}
+    <section>
+        <h2>New Diary Entry</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_div }}
+            <button type="submit">Save</button>
+        </form>
+    </section>
+{% endblock %}

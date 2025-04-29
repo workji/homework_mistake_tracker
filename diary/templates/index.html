@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to My Diary{% endblock %}
+{% block header %}
+    <h1>Welcome to My Diary</h1>
+{% endblock %}
+{% block content %}
+    <section style="text-align: center;">
+        <h2>Your Personal Diary Tracker</h2>
+        <p>Keep track of your daily thoughts and experiences.</p>
+        <a href="{% url 'diary:list' %}" class="button">View Diaries</a>
+        <p>Make new daily.</p>
+        <a href="{% url 'diary:create' %}" class="button">New Diary</a>
+    </section>
+{% endblock %}

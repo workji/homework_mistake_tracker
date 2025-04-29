@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Diary Detail{% endblock %}
+{% block header %}
+    <h1>Diary Detail</h1>
+    <nav>
+        <a href="{% url 'diary:list' %}">Diary List</a> | 
+        <a href="{% url 'diary:index' %}">Home</a>
+    </nav>
+{% endblock %}
+{% block content %}
+    <section>
+        <h2>{{ page.title }}</h2>
+        <div><strong>Date:</strong> {{ page.page_date }}</div>
+        <div>{{ page.content | linebreaksbr }}</div>
+        {% if page.picture %}
+            <div>
+                <img src="{{ page.picture.url }}" alt="Diary Picture" style="max-width: 100%; height: auto; margin-top: 1rem;">
+            </div>
+        {% endif %}
+        <div style="margin-top: 1rem;">
+            <a href="{% url 'diary:edit' page.id %}">Edit</a>
+            <a href="{% url 'diary:delete' page.id %}" style="color: #e74c3c;">Delete</a>
+        </div>
+    </section>
+{% endblock %}

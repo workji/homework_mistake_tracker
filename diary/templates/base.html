@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}My Diary App{% endblock %}</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/diary/base.css' %}">
+</head>
+<body>
+  <header>
+    <h1>{% block header %}My Diary App{% endblock %}</h1>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>&copy; 2025 My Diary App. All rights reserved.</p>
+  </footer>
+</body>
+</html>
