@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Welcome to My Diary{% endblock %}
-{% block header %}
-    <h1>Welcome to My Diary</h1>
-{% endblock %}
+{% block header %}Welcome to My Diary{% endblock %}
 {% block content %}
-    <section style="text-align: center;">
-        <h2>Your Personal Diary Tracker</h2>
-        <p>Keep track of your daily thoughts and experiences.</p>
-        <a href="{% url 'diary:list' %}" class="button">View Diaries</a>
-        <p>Make new daily.</p>
-        <a href="{% url 'diary:create' %}" class="button">New Diary</a>
+    <section class="text-center space-y-6">
+        <h2 class="text-3xl font-bold text-gray-800">Your Personal Diary Tracker</h2>
+        <p class="text-xl text-gray-600">Keep track of your daily thoughts and experiences.</p>
+        <div class="space-x-4">
+            <a href="{% url 'diary:create' %}" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
+                Create New Entry
+            </a>
+            <a href="{% url 'diary:list' %}" class="inline-block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">
+                View All Entries
+            </a>
+        </div>
     </section>
 {% endblock %}

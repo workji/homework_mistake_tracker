@@ -1,24 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}Edit Diary{% endblock %}
-{% block header %}
-    <h1>Edit Diary</h1>
-    <nav>
-        <a href="{% url 'diary:list' %}">Diary List</a> | 
-        <a href="{% url 'diary:index' %}">Home</a>
-    </nav>
-{% endblock %}
+{% block header %}Edit Diary{% endblock %}
 {% block content %}
-    <section>
-        <h2>Edit Entry</h2>
+    <section class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold mb-4">Edit Diary Entry</h2>
         {% if page.picture %}
-            <div>
-                <img src="{{ page.picture.url }}" alt="Diary Picture" style="max-width: 100%; height: auto; margin-bottom: 1rem;">
+            <div class="mb-4">
+                <img src="{{ page.picture.url }}" alt="Current Picture" class="max-w-full h-auto rounded-lg">
             </div>
         {% endif %}
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
             {% csrf_token %}
-            {{ form.as_div }}
-            <button type="submit">Save Changes</button>
+            <div class="space-y-2">
+                {{ form.as_div }}
+            </div>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Update</button>
         </form>
     </section>
 {% endblock %}

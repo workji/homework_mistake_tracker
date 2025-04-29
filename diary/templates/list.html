@@ -1,22 +1,17 @@
 {% extends 'base.html' %}
-{% block title %}Diary Index{% endblock %}
-{% block header %}
-    <h1>Diary List</h1>
-    <nav>
-        <a href="{% url 'diary:create' %}">New Diary</a>
-    </nav>
-{% endblock %}
+{% block title %}Diary List{% endblock %}
+{% block header %}Diary List{% endblock %}
 {% block content %}
-    <section>
-        <h2>All Diaries</h2>
-        <ul>
+    <section class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold mb-4">All Diaries</h2>
+        <ul class="space-y-4">
             {% for page in page_list %}
-                <li>
-                    <strong>{{ page.page_date }}</strong>: 
-                    <a href="{% url 'diary:detail' page.id %}">{{ page.title }}</a>
+                <li class="border p-4 rounded-lg hover:bg-gray-50">
+                    <span class="font-bold">{{ page.page_date }}</span>: 
+                    <a href="{% url 'diary:detail' page.id %}" class="text-green-600 hover:underline">{{ page.title }}</a>
                 </li>
             {% empty %}
-                <div class="empty-message">No Diary Now.</div>
+                <div class="text-gray-500 text-center">No Diary Now.</div>
             {% endfor %}
         </ul>
     </section>
