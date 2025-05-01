@@ -1,17 +1,27 @@
 {% extends 'base.html' %}
-{% block title %}Welcome to My Diary{% endblock %}
-{% block header %}Welcome to My Diary{% endblock %}
+{% block title %}{% endblock %}
 {% block content %}
-    <section class="text-center space-y-6">
-        <h2 class="text-3xl font-bold text-gray-800">Your Personal Diary Tracker</h2>
-        <p class="text-xl text-gray-600">Keep track of your daily thoughts and experiences.</p>
-        <div class="space-x-4">
-            <a href="{% url 'diary:create' %}" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
-                Create New Entry
-            </a>
-            <a href="{% url 'diary:list' %}" class="inline-block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">
-                View All Entries
-            </a>
+    <section id="home" class="my-5 p-4 rounded card">
+        <h1 class="display-5 mb-4 tech-glow"><i class="fas fa-atom me-2"></i>欢迎来到您的数字意识流</h1>
+        <p class="lead">在这里记录您的想法、灵感和日常。利用未来的技术，安全地保存您的记忆。</p>
+        <hr class="my-4">
+        <h3 class="mb-3">最近条目</h3>
+        <div class="row g-3">
+            {% for page in page_list %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ page.title }}</h5>
+                            <p class="card-text flex-grow-1 text-truncate">{{ page.content }}</p>
+                            <p class="card-text"><small class="text-muted">记录于：{{ page.page_date }}</small></p>
+                            <a href="{% url 'diary:detail' page.id %}" class="btn btn-sm btn-outline-info mt-auto align-self-start">阅读全文 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+             <a href="{% url 'diary:create' %}" class="btn btn-primary btn-lg"><i class="fas fa-pen-fancy me-2"></i>开始写日记</a>
         </div>
     </section>
 {% endblock %}

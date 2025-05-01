@@ -20,6 +20,7 @@ class Page(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="ID")
     title = models.CharField(max_length=200, verbose_name="Title")
     content = models.TextField(verbose_name="Content")
+    address = models.TextField(verbose_name="Address", null=True, blank=True)
     page_date = models.DateField(verbose_name="Page date")
     picture = models.ImageField(upload_to=generate_filename, null=True, blank=True, verbose_name="Picture")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")

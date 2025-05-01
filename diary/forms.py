@@ -5,10 +5,8 @@ from .models import Page
 class PageForm(ModelForm):
     class Meta:
         model = Page
-        fields = ['title', 'content', 'page_date', 'picture']
-        widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
-            'page_date': forms.DateInput(attrs={'type': 'date'}),
-            'picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-        }
+        fields = ['title', 'content', 'address', 'page_date', 'picture']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['picture'].required = False

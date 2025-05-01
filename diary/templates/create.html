@@ -1,15 +1,45 @@
 {% extends 'base.html' %}
 {% block title %}Create Diary{% endblock %}
-{% block header %}Create New Diary{% endblock %}
 {% block content %}
-    <section class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-xl font-bold mb-4">New Diary Entry</h2>
-        <form method="post" enctype="multipart/form-data" class="space-y-4">
-            {% csrf_token %}
-            <div class="space-y-2">
-                {{ form.as_div }}
+<section id="edit" class="my-5">
+    <h2 class="mb-4 tech-glow"><i class="fas fa-pencil-alt me-2"></i>创建条目</h2>
+    <div class="card p-4">
+        <form method="post" enctype="multipart/form-data">
+             {% csrf_token %}
+             <div class="mb-3">
+                <label for="entryTitle" class="form-label">{{ form.title.label }}</label>
+                <input type="text" class="form-control {% if form.title.errors %}is-invalid{% endif %}" id="entryTitle" name="title" placeholder="为您的想法命名" value="{{ form.title.value|default_if_none:'' }}" required>
+                {% if form.title.errors %}<div class="invalid-feedback">{{ form.title.errors|join:", " }}</div>{% endif %}
+             </div>
+            <div class="mb-3">
+                <label for="entryContent" class="form-label">{{ form.content.label }}</label>
+                <textarea class="form-control {% if form.content.errors %}is-invalid{% endif %}" id="entryContent" name="content" rows="10" placeholder="在此处输入您的日记内容..." required>{{ form.content.value|default_if_none:'' }}</textarea>
+                {% if form.content.errors %}<div class="invalid-feedback">{{ form.content.errors|join:", " }}</div>{% endif %}
             </div>
-            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Save</button>
+             <div class="mb-3">
+                <label for="entryLocation" class="form-label">{{ form.address.label }}</label>
+                <input type="text" class="form-control {% if form.address.errors %}is-invalid{% endif %}" id="entryLocation" name="address" placeholder="例如: 东京都葛饰区 或 公司会议室" value="{{ form.address.value|default_if_none:'' }}">
+                {% if form.address.errors %}<div class="invalid-feedback">{{ form.address.errors|join:", " }}</div>{% endif %}
+             </div>
+             <div class="mb-3">
+                <label for="entryDate" class="form-label">{{ form.page_date.label }}</label>
+                <input type="date" class="form-control {% if form.page_date.errors %}is-invalid{% endif %}" id="entryDate" name="page_date" placeholder="2025年5月1日" value="{{ form.page_date.value|default_if_none:'' }}">
+                {% if form.page_date.errors %}<div class="invalid-feedback">{{ form.page_date.errors|join:", " }}</div>{% endif %}
+             </div>
+             <div class="mb-3">
+                <label for="entryPicture" class="form-label">{{ form.picture.label }}</label>
+                <input type="file" class="form-control {% if form.picture.errors %}is-invalid{% endif %}" id="entryPicture" name="picture" >
+                {% if form.picture.errors %}<div class="invalid-feedback">{{ form.picture.errors|join:", " }}</div>{% endif %}
+             </div>
+             <div class="mb-3">
+                <label for="entryTags" class="form-label">标签 (用逗号分隔)</label>
+                <input type="text" class="form-control" id="entryTags" name="tags" placeholder="例如: 科技, 随笔, 项目" value="科学, 思考">
+             </div>
+            <div class="d-flex justify-content-end">
+                 <a href="{% url 'diary:list' %}" class="btn btn-secondary me-2"><i class="fas fa-times me-1"></i> 取消</a>
+                 <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> 保存条目</button>
+            </div>
         </form>
-    </section>
+    </div>
+</section>
 {% endblock %}
