@@ -1,0 +1,288 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 聊天室</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/chatai/base.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent pt-3">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-stars me-2" viewBox="0 0 16 16">
+                  <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.9l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.9A1.73 1.73 0 0 0 2.31 4.803L1.148 4.416a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+                </svg>
+                AI 聊天界面
+            </a>
+        </div>
+    </nav>
+
+    <div class="container flex-grow-1 d-flex flex-column pb-3">
+        <div class="chat-container d-flex flex-column">
+            <div class="chat-header">
+                 <div class="row align-items-center g-2">
+                    <div class="col-md-auto">
+                        <label for="aiSelect" class="form-label visually-hidden">选择 AI</label>
+                        <select class="form-select form-select-sm" id="aiSelect" aria-label="选择 AI">
+                            {% for ai in ai_options %}
+                                <option value="{{ ai }}">{{ ai }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-auto">
+                         <label for="modelSelect" class="form-label visually-hidden">选择模型</label>
+                         <select class="form-select form-select-sm" id="modelSelect" aria-label="选择模型">
+                         </select>
+                    </div>
+                    <div class="col-md text-md-end">
+                        <h6 class="mb-0 text-info" id="currentModelDisplay"></h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-history" id="chatHistory">
+                <div class="message ai-message">
+                    你好！我是您的 AI 助手。请选择一个 AI 和模型开始聊天。
+                    <span class="message-meta">AI - 刚刚</span>
+                </div>
+            </div>
+
+             <div class="loading-indicator" id="loadingIndicator">
+                <div class="spinner-border text-info" role="status">
+                    <span class="visually-hidden">正在思考...</span>
+                </div>
+                <span class="ms-2">正在思考...</span>
+            </div>
+
+            <div class="input-area">
+                <form id="messageForm">
+                    {% csrf_token %} <div class="input-group">
+                        <textarea class="form-control" id="messageInput" placeholder="输入您的消息 (Shift+Enter 换行)" rows="20" aria-label="聊天输入框"></textarea>
+                        <button class="btn btn-primary" type="submit" id="sendButton" title="发送消息">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.001.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- 将 JSON 数据嵌入一个 <script> 标签中 -->
+    {{ model_options|json_script:"model-options-data" }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const aiSelect = document.getElementById('aiSelect');
+            const modelSelect = document.getElementById('modelSelect');
+            const messageForm = document.getElementById('messageForm');
+            const messageInput = document.getElementById('messageInput');
+            const chatHistory = document.getElementById('chatHistory');
+            const sendButton = document.getElementById('sendButton');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const currentModelDisplay = document.getElementById('currentModelDisplay');
+
+            // 从 Django context 获取模型数据 (需要转义以安全地嵌入 JS)
+            const modelOptionsData = JSON.parse(document.getElementById('model-options-data').textContent);
+
+            // --- AI/Model Selection Logic ---
+            function updateModelOptions() {
+                const selectedAI = aiSelect.value;
+                const models = modelOptionsData[selectedAI] || [];
+                modelSelect.innerHTML = ''; // Clear existing options
+
+                if (models.length > 0) {
+                    models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.textContent = model;
+                        modelSelect.appendChild(option);
+                    });
+                    modelSelect.disabled = false;
+                    updateCurrentModelDisplay(); // Update display after populating
+                } else {
+                    const option = document.createElement('option');
+                    option.textContent = '无可用模型';
+                    modelSelect.appendChild(option);
+                    modelSelect.disabled = true;
+                    currentModelDisplay.textContent = ''; // Clear display if no models
+                }
+            }
+
+             function updateCurrentModelDisplay() {
+                const selectedAI = aiSelect.value;
+                const selectedModel = modelSelect.value;
+                if (selectedAI && selectedModel && !modelSelect.disabled) {
+                    currentModelDisplay.textContent = `当前: ${selectedAI} - ${selectedModel}`;
+                } else {
+                     currentModelDisplay.textContent = '';
+                }
+            }
+
+            aiSelect.addEventListener('change', updateModelOptions);
+            modelSelect.addEventListener('change', updateCurrentModelDisplay);
+
+            // Initial population
+            updateModelOptions();
+
+            // --- Message Sending Logic ---
+            messageForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                sendMessage();
+            });
+
+            // Allow Shift+Enter for new line, Enter to send
+            messageInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendMessage();
+                }
+                autoResizeTextarea(); // Resize on keydown
+            });
+
+             // Auto-resize textarea height
+            function autoResizeTextarea() {
+                messageInput.style.height = 'auto'; // Temporarily shrink
+                // Set height based on scroll height, but respect max-height
+                const maxHeight = parseInt(window.getComputedStyle(messageInput).maxHeight, 10);
+                const newHeight = Math.min(messageInput.scrollHeight, maxHeight);
+                messageInput.style.height = newHeight + 'px';
+            }
+            // Initial resize check in case of pre-filled content
+            autoResizeTextarea();
+
+
+            function sendMessage() {
+                const messageText = messageInput.value.trim();
+                const selectedAI = aiSelect.value;
+                const selectedModel = modelSelect.value;
+
+                if (!messageText) {
+                    return; // Don't send empty messages
+                }
+                if (modelSelect.disabled) {
+                    addMessageToHistory("请先选择一个有效的 AI 和模型。", "system");
+                    return;
+                }
+
+                // Add user message to history immediately
+                addMessageToHistory(messageText, "user", selectedAI, selectedModel);
+                messageInput.value = ''; // Clear input field
+                autoResizeTextarea(); // Reset textarea height
+                scrollToBottom();
+
+                // Show loading indicator and disable send button
+                loadingIndicator.style.display = 'block';
+                sendButton.disabled = true;
+                messageInput.disabled = true; // Disable input while waiting
+
+                // Get CSRF token
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                // Send message to Django backend via Fetch API (AJAX)
+                fetch("{% url 'chatai:send_message' %}", { // Use Django url template tag
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest', // Important for Django request.is_ajax()
+                    },
+                    body: JSON.stringify({
+                        message: messageText,
+                        ai: selectedAI,
+                        model: selectedModel
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        // Try to get error message from backend JSON response
+                        return response.json().then(errData => {
+                             throw new Error(errData.message || `HTTP error! status: ${response.status}`);
+                        }).catch(() => {
+                            // Fallback if response is not JSON or has no message
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        });
+                    }
+                    return response.json();
+                 })
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Add AI response to history
+                        addMessageToHistory(data.ai_response, "ai", selectedAI, selectedModel);
+                    } else {
+                        // Handle backend errors reported in JSON
+                        addMessageToHistory(`错误: ${data.message || '未知错误'}`, "system");
+                        console.error("Backend error:", data.message);
+                    }
+                })
+                .catch(error => {
+                    // Handle network errors or other issues
+                    addMessageToHistory(`发送失败: ${error.message}`, "system");
+                    console.error('Fetch Error:', error);
+                })
+                .finally(() => {
+                    // Hide loading indicator and re-enable input/button
+                    loadingIndicator.style.display = 'none';
+                    sendButton.disabled = false;
+                    messageInput.disabled = false;
+                    scrollToBottom();
+                    messageInput.focus(); // Return focus to input
+                });
+            }
+
+            // --- Chat History Management ---
+            function addMessageToHistory(text, senderType, aiName = 'AI', modelName = '') {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+
+                const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                let metaText = '';
+
+                if (senderType === 'user') {
+                    messageElement.classList.add('user-message');
+                    metaText = `您 (${aiName} - ${modelName}) - ${timestamp}`;
+                } else if (senderType === 'ai') {
+                    messageElement.classList.add('ai-message');
+                    metaText = `${aiName} (${modelName}) - ${timestamp}`;
+                } else { // System messages (e.g., errors)
+                    messageElement.classList.add('system-message', 'text-warning', 'fst-italic'); // Add custom class if needed
+                    metaText = `系统 - ${timestamp}`;
+                }
+
+                // Sanitize text before adding to prevent XSS (basic example)
+                const textNode = document.createTextNode(text);
+                messageElement.appendChild(textNode);
+
+
+                const metaElement = document.createElement('span');
+                metaElement.classList.add('message-meta');
+                metaElement.textContent = metaText;
+                messageElement.appendChild(metaElement);
+
+                chatHistory.appendChild(messageElement);
+            }
+
+            function scrollToBottom() {
+                // Use smooth scrolling if available
+                if ('scrollBehavior' in document.documentElement.style) {
+                    chatHistory.scrollTo({ top: chatHistory.scrollHeight, behavior: 'smooth' });
+                } else {
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                }
+            }
+
+            // Scroll to bottom on initial load (after a slight delay for rendering)
+            setTimeout(scrollToBottom, 100);
+        });
+    </script>
+</body>
+</html>
